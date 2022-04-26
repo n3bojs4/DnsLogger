@@ -47,7 +47,7 @@ Run the fake dns server
 ./FakeDnsServer.py --port 5300 --tcp --udp
 ```
 
-Run the web app
+Edit run.sh for setting your parameters and Run the web app
 ```
 ./run.sh
 ```
