@@ -67,3 +67,7 @@ The server replies with i don't know :)
 
 ## static dir
 All css and js needed by the app.
+
+
+# LICENSE
+MIT LICENSE, see LICENSE file for more informations.
