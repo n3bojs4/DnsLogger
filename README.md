@@ -11,7 +11,8 @@ This program can be used during pentests to gather informations through dns requ
     + [webserver.py](#webserverpy)
     + [FakeDnsServer.py](#fakednsserverpy)
     + [static dir](#static-dir)
-
+  * [License](#License)
+  
 ## Prerequisites
 
 Python3+
