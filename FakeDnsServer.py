@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-"""
-LICENSE http://www.apache.org/licenses/LICENSE-2.0
-"""
 
 import argparse
 import datetime
@@ -14,20 +11,11 @@ import socketserver
 import struct
 import redis
 import json
-
-try:
-    from dnslib import *
-except ImportError:
-    print("Missing dependency dnslib: <https://pypi.python.org/pypi/dnslib>. Please install it with `pip`.")
-    sys.exit(2)
-
+from dnslib import *
 
 class DomainName(str):
     def __getattr__(self, item):
         return DomainName(item + '.' + self)
-
-
-
 
 def dns_response(data):
     request = DNSRecord.parse(data)
@@ -39,8 +27,6 @@ def dns_response(data):
     qn = str(qname)
     qtype = request.q.qtype
     qt = QTYPE[qtype]
-
-
 
     return reply.pack()
 
@@ -69,11 +55,12 @@ class BaseRequestHandler(socketserver.BaseRequestHandler):
                 b'subdomain': str.encode(subdomain)
             }
             stream_key = subdomain
-
-            #record = json.dumps(record)
-            if(r):
+            try:
                 r.xadd(stream_key,record)
                 r.expire(stream_key,86400) # stream expire after 24h
+            except:
+                print("Cannot store informations into redis stream:",stream_key)
+                traceback.print_exc(file=sys.stderr)
             self.send_data(dns_response(data))
         except Exception:
             traceback.print_exc(file=sys.stderr)

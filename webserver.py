@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
-# Set config from config file
+# Set domain from config file
 mydomain = config['DEFAULT']['MainDomain']
 
 print("Connecting to Redis server:",config['REDIS']['Host'],"on port",config['REDIS']['Port'])
@@ -33,8 +33,12 @@ def index():
     SubDomain = request.cookies.get('SubDomain')
     if Token:
       StrToMatch = '*'+SubDomain
-      streams=r.scan(int=0,_type="stream",match=StrToMatch, count=5000)
-      #print("Streams:",streams[1])
+      try:
+        streams=r.scan(int=0,_type="stream",match=StrToMatch, count=5000)
+      except:
+        print("Error: cannot scan redis streams. Exiting.")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit()
       for stream in streams[1]:
         for line in r.xrange(stream):
           date = line[1][b'date'].decode("utf-8")
@@ -52,7 +56,6 @@ def index():
       resp.set_cookie('Token', Token)
       resp.set_cookie('SubDomain', SubDomain)
     return(resp)
-    #return render_template('index.html')
 
 @app.route('/Reset', methods = ['POST'])
 def ClearCookies():
@@ -62,7 +65,7 @@ def ClearCookies():
 
 
 
-# Static content
+# Serve Static content
 @app.route('/static/<path:path>')
 def send_report(path):
   return send_from_directory('static', path)
@@ -70,7 +73,3 @@ def send_report(path):
 @app.route('/favicon.ico')
 def favicon():
   return send_from_directory('static','favicon.ico',mimetype='image/x-icon')
-
-
-#Help
-# r.scan(int=0,_type="stream",match="*winner.fr") --> retourne un dico avec les résultats
