@@ -2,6 +2,7 @@ from flask import Flask, render_template, make_response, request, send_from_dire
 import secrets
 import redis
 import configparser
+import hmac
 
 
 config = configparser.ConfigParser()
@@ -31,7 +32,15 @@ def index():
     subdomain = secrets.token_hex(3) + "." + mydomain
     Token = request.cookies.get('Token')
     SubDomain = request.cookies.get('SubDomain')
-    if Token:
+    if Token and SubDomain:
+      # checking the token
+      Secret = config['DEFAULT']['Secret']
+      Secret = str.encode(Secret)
+      Encrypted = hmac.new(Secret,SubDomain.encode(),digestmod='sha256')
+      Challenge = Encrypted.hexdigest()
+      if Challenge not in Token:
+        SubDomain = 'YouCantOwnThisToken'
+
       StrToMatch = '*'+SubDomain
       try:
         streams=r.scan(int=0,_type="stream",match=StrToMatch, count=5000)
@@ -50,8 +59,13 @@ def index():
           
       resp = make_response(render_template('index.html',pagetitle=config['DEFAULT']['PageTitle'], subdomain=SubDomain, token=Token, logs=results))
     else:
-      Token = secrets.token_urlsafe(24)
       SubDomain = subdomain
+      # Generate the token with secret and subdomain
+      Secret = config['DEFAULT']['Secret']
+      Secret = str.encode(Secret)
+      Encrypted = hmac.new(Secret,SubDomain.encode(),digestmod='sha256')
+      Token = Encrypted.hexdigest()
+
       resp = make_response('<HTML><META HTTP-EQUIV="refresh" CONTENT="1">Token generated successfully, reloading the page !</HTML>')
       resp.set_cookie('Token', Token)
       resp.set_cookie('SubDomain', SubDomain)
