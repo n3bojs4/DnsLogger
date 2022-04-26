@@ -2,6 +2,15 @@
 
 This program can be used during pentests to gather informations through dns requests.
 
+
+- [DnsLogger](#dnslogger)
+  * [Installation](#installation)
+  * [Files](#files)
+    + [config.ini](#configini)
+    + [webserver.py](#webserverpy)
+    + [FakeDnsServer.py](#fakednsserverpy)
+
+
 ## Installation
 
 1. Clone the repo
