@@ -10,6 +10,7 @@ This program can be used during pentests to gather informations through dns requ
     + [config.ini](#configini)
     + [webserver.py](#webserverpy)
     + [FakeDnsServer.py](#fakednsserverpy)
+    + [static dir](#staticdir)
 
 ## Prerequisites
 
@@ -64,3 +65,5 @@ A flask App which show you the logs.
 A Fake dns server which log all the requests in a redis stream.
 The server replies with i don't know :)
 
+## static dir
+All css and js needed by the app.
