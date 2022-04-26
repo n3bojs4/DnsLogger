@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ pagetitle }}</title>
+<meta name="description" content="private dns log platform for pentesting">
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+<link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">
+<link href="/static/bootstrap.min.css" rel="stylesheet">
+<link href="/static/dashboard.css" rel="stylesheet">
+</head>
+<body>
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+</header>
+<div class="container-fluid">
+<div class="row">
+<main class="col-md-10 offset-md-1">
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+<h1 class="h2">Domain</h1>
+</div>
+<p class="lead">subdomain:<span id="myDomain"> {{ subdomain }} </span><br>token:<span id="token"> {{ token }}</span>
+</p>
+
+<form>
+    <button type="submit" class="btn btn-primary" formaction="Reset" formmethod="POST">Reset</button>
+    <button type="submit" class="btn btn-primary" formaction="/" formmethod="GET">New subdomain</button>
+</form>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+<h1 class="h2">Results</h1>
+</div>
+<input type="checkbox" onclick="toggleAutoRefresh(this);" id="reloadCB"> Auto Refresh 5s
+<label class="form-check-label">
+<div id="fresh" style="display: inline;"></div>
+</label>
+</div>
+<div class="table-responsive">
+<table class="table table-striped table-sm">
+<thead>
+<tr>
+<th scope="col">Time</th>
+<th scope="col">Protocol</th>
+<th scope="col">Host</th>
+<th scope="col">Request</th>
+</tr>
+
+
+
+
+</thead>
+<tbody id="myRecords">
+    {% for line in logs %}
+    <tr>
+        <th scope="row">{{line.split()[0]}} {{line.split()[1]}}</th>
+        <td>{{line.split()[2]}}</td>
+        <td>{{line.split()[3]}}</td>
+        <td>{{line.split()[4]}}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+</div>
+<p class="lead" style="text-overflow:ellipsis; -o-text-overflow:ellipsis; overflow:hidden;">
+
+<script type="text/javascript" src="/static/main.js"></script>
+
+</p>
+</main>
+</div>
+</div>
+</body>
+</html>
