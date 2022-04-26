@@ -3,12 +3,20 @@
 This program can be used during pentests to gather informations through dns requests.
 
 - [DnsLogger](#dnslogger)
+  * [Prerequisites](#prerequisites)
   * [Installation](#installation)
   * [Running](#running)
   * [Files](#files)
     + [config.ini](#configini)
     + [webserver.py](#webserverpy)
     + [FakeDnsServer.py](#fakednsserverpy)
+
+## Prerequisites
+
+Python3+
+
+A redis server 5.0+ (which support streams)
+
 
 ## Installation
 
