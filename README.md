@@ -10,7 +10,7 @@ This program can be used during pentests to gather informations through dns requ
     + [config.ini](#configini)
     + [webserver.py](#webserverpy)
     + [FakeDnsServer.py](#fakednsserverpy)
-    + [static dir](#staticdir)
+    + [static dir](#static-dir)
 
 ## Prerequisites
 
