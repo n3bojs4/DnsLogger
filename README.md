@@ -13,34 +13,36 @@ This program can be used during pentests to gather informations through dns requ
 
 ## Installation
 
-1. Clone the repo
+Clone the repo
 ```
 git clone https://github.com/n3bojs4/DnsLogger
 cd DnsLogger
 ```
 
 
-2. Create venv
+Create venv
 ```
 python3 -m venv .
 ```
 
-3. Install dependencies
+Install dependencies
 ```
 pip3 install -r requirements.txt
 ```
 
-4. Run the fake dns server
+## Running
+
+Run the fake dns server
 ```
 ./FakeDnsServer.py --port 5300 --tcp --udp
 ```
 
-5. Run the web app
+Run the web app
 ```
 ./run.sh
 ```
 
-6. Connect to the webpage and enjoy :D
+Connect to the webpage and enjoy :D
 
 
 ## Files
