@@ -4,7 +4,7 @@ import redis
 import configparser
 import hmac
 import traceback
-
+import sys
 
 config = configparser.ConfigParser()
 config.read('config.ini')
