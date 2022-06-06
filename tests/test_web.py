@@ -5,10 +5,10 @@ def test_should_status_code_ok(client):
     response = client.get('/')
     assert response.status_code == 200
 
-def test_should_return_default_domain(client):
+def test_should_return_Token_Success(client):
     response = client.get('/')
     data = response.data.decode()
-    assert data == "yourDomain.tld"
+    assert data == "Token generated successfully"
 
 # Test static files
 def test_should_status_code_ok(client):
