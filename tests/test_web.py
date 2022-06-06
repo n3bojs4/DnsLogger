@@ -8,7 +8,7 @@ def test_should_status_code_ok(client):
 def test_should_return_Token_Success(client):
     response = client.get('/')
     data = response.data.decode()
-    assert data == "Token generated successfully"
+    assert "Token generated successfully" in data
 
 # Test static files
 def test_should_status_code_ok(client):
