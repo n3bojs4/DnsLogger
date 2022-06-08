@@ -45,7 +45,3 @@ jobs:
     - name: Tests with pytest
       run: |
         pytest
-  check_security:
-    - uses: jpetrucciani/bandit-check@master
-      with:
-        path: '.'
