@@ -125,8 +125,8 @@ def main():
     if args.tcp: servers.append(socketserver.ThreadingTCPServer(('', args.port), TCPRequestHandler))
 
     for s in servers:
-        thread = threading.Thread(target=s.serve_forever)  # that thread will start one more thread for each request
-        thread.daemon = True  # exit the server thread when the main thread terminates
+        thread = threading.Thread(target=s.serve_forever)  # that thread will start one more thread for each request.
+        thread.daemon = True  # exit the server thread when the main thread terminates.
         thread.start()
         print("%s server loop running in thread: %s" % (s.RequestHandlerClass.__name__[:3], thread.name))
 
