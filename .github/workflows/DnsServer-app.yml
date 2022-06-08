@@ -46,6 +46,6 @@ jobs:
       run: |
         pytest
   check_security:
-  - uses: jpetrucciani/bandit-check@master
-    with:
-      path: '.'
+    - uses: jpetrucciani/bandit-check@master
+      with:
+        path: '.'
