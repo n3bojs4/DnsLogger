@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -16,8 +16,16 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        redis-version: [5]
 
     steps:
+    - name: Start Redis Server v${{ matrix.redis-version }}
+      uses: superchargejs/redis-github-action@1.1.0
+      with:
+        redis-version: ${{ matrix.redis-version }}
+
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
@@ -34,6 +42,6 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Tests with pytest
       run: |
-        pytest FakeDnsServer.py
+        pytest
