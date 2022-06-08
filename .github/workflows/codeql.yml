@@ -12,13 +12,22 @@
 name: "CodeQL"
 
 on:
-  push:
-    branches: [ "dev" ]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ "dev" ]
-  schedule:
-    - cron: '45 9 * * 3'
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'CodeQL sec checks.'
+  
+  workflow_run:
+    workflows: ["Python application"]
+    type:
+      - complete
+#  push:
+#    branches: [ "dev" ]
+#  pull_request:
+#    # The branches below must be a subset of the branches above
+#    branches: [ "dev" ]
+#  schedule:
+#    - cron: '45 9 * * 3'
 
 jobs:
   analyze:
