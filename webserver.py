@@ -24,6 +24,21 @@ except:
   traceback.print_exc(file=sys.stderr)
   sys.exit()
 
+def ChallengeThisToken(Data,Challenge):
+    """Check if encrypted data = challenge (using secret)"""
+    Secret=str.encode(settings['DEFAULT']['Secret'])
+    Encrypted = hmac.new(Secret,Data.encode(),digestmod='sha256').hexdigest()
+    if Challenge in Encrypted:
+        return True
+    else:
+        return False
+    
+def CreateToken(Data):
+    """ Return encrypted token"""
+    Secret=str.encode(settings['DEFAULT']['Secret'])
+    Encrypted = hmac.new(Secret,Data.encode(),digestmod='sha256').hexdigest()
+    return Encrypted
+
 
 def create_app(config):
     app = Flask(__name__)
@@ -37,40 +52,34 @@ def create_app(config):
         Token = request.cookies.get('Token')
         SubDomain = request.cookies.get('SubDomain')
         if Token and SubDomain:
-                # checking the token
-                Secret = settings['DEFAULT']['Secret']
-                Secret = str.encode(Secret)
-                Encrypted = hmac.new(Secret,SubDomain.encode(),digestmod='sha256')
-                Challenge = Encrypted.hexdigest()
-                if Challenge not in Token:
-                    SubDomain = 'YouCantOwnThisToken'
-                StrToMatch = '*'+SubDomain
-                try:
-                    streams=r.scan(int=0,_type="stream",match=StrToMatch, count=5000)
-                except:
-                    print("Error: cannot scan redis streams. Exiting.")
-                    traceback.print_exc(file=sys.stderr)
-                    sys.exit()
-    
-                for stream in streams[1]:
-                    for line in r.xrange(stream):
-                        date = line[1][b'date'].decode("utf-8")
-                        type = line[1][b'type'].decode("utf-8")
-                        ip = line[1][b'ip'].decode("utf-8")
-                        dnsreq = line[1][b'SubDomain'].decode("utf-8")
-                        bar = date+" "+type+" "+ip+" "+dnsreq
-                        results.append(bar)
+
+            # Check if the Token is legit
+            if ChallengeThisToken(SubDomain,Token) is False:
+                SubDomain = 'YouCantOwnThisToken'
+            
+            StrToMatch = '*'+SubDomain
+            try:
+                streams=r.scan(int=0,_type="stream",match=StrToMatch, count=5000)
+            except:
+                print("Error: cannot scan redis streams. Exiting.")
+                traceback.print_exc(file=sys.stderr)
+                sys.exit()
+                
+            for stream in streams[1]:
+                for line in r.xrange(stream):
+                    date = line[1][b'date'].decode("utf-8")
+                    type = line[1][b'type'].decode("utf-8")
+                    ip = line[1][b'ip'].decode("utf-8")
+                    dnsreq = line[1][b'SubDomain'].decode("utf-8")
+                    bar = date+" "+type+" "+ip+" "+dnsreq
+                    results.append(bar)
           
-                resp = make_response(render_template('index.html',pagetitle=settings['DEFAULT']['PageTitle'], subdomain=SubDomain, token=Token, logs=results))
+            resp = make_response(render_template('index.html',pagetitle=settings['DEFAULT']['PageTitle'], subdomain=SubDomain, token=Token, logs=results))
         else:
             # Here we generate a random subdomain for first time
             SubDomain = secrets.token_hex(3) + "." + mydomain
-            print("SubDomain =",SubDomain)
             # Generate the token with secret and subdomain
-            Secret = settings['DEFAULT']['Secret']
-            Secret = str.encode(Secret)
-            Encrypted = hmac.new(Secret,SubDomain.encode(),digestmod='sha256')
-            Token = Encrypted.hexdigest()
+            Token = CreateToken(SubDomain)
             resp = make_response('<HTML><META HTTP-EQUIV="refresh" CONTENT="1">Token generated successfully, reloading the page !</HTML>')
             resp.set_cookie('Token', Token)
             resp.set_cookie('SubDomain', SubDomain)
