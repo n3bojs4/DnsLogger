@@ -6,11 +6,14 @@ import hmac
 import traceback
 import sys
 
+# Read config file
 settings = configparser.ConfigParser()
 settings.read('config.ini')
+
 # Set domain from config file
 mydomain = settings['DEFAULT']['MainDomain']
 
+# Connect to Redis
 print("Connecting to Redis server:",settings['REDIS']['Host'],"on port",settings['REDIS']['Port'])
 try:
   r = redis.Redis(host=settings['REDIS']['Host'], port=settings['REDIS']['Port'], socket_timeout=3, db=0)
@@ -31,8 +34,6 @@ def create_app(config):
     def index():
         results = ['']
         bar=''
-        #resp=''
-        subdomain = secrets.token_hex(3) + "." + mydomain
         Token = request.cookies.get('Token')
         SubDomain = request.cookies.get('SubDomain')
         if Token and SubDomain:
@@ -56,14 +57,15 @@ def create_app(config):
                         date = line[1][b'date'].decode("utf-8")
                         type = line[1][b'type'].decode("utf-8")
                         ip = line[1][b'ip'].decode("utf-8")
-                        dnsreq = line[1][b'subdomain'].decode("utf-8")
+                        dnsreq = line[1][b'SubDomain'].decode("utf-8")
                         bar = date+" "+type+" "+ip+" "+dnsreq
                         results.append(bar)
           
                 resp = make_response(render_template('index.html',pagetitle=settings['DEFAULT']['PageTitle'], subdomain=SubDomain, token=Token, logs=results))
         else:
-            SubDomain = subdomain
-            print("SubDomain = subdomain =",SubDomain)
+            # Here we generate a random subdomain for first time
+            SubDomain = secrets.token_hex(3) + "." + mydomain
+            print("SubDomain =",SubDomain)
             # Generate the token with secret and subdomain
             Secret = settings['DEFAULT']['Secret']
             Secret = str.encode(Secret)
