@@ -59,7 +59,7 @@ def create_app(config):
             
             StrToMatch = '*'+SubDomain
             try:
-                streams=r.scan(int=0,_type="stream",match=StrToMatch, count=5000)
+                streams=r.scan(int=0,_type="stream",match=StrToMatch, count=settings['DEFAULT']['MaxReturnResults'])
             except:
                 print("Error: cannot scan redis streams. Exiting.")
                 traceback.print_exc(file=sys.stderr)

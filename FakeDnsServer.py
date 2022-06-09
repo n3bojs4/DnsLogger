@@ -2,6 +2,7 @@
 
 import argparse
 import datetime
+import configparser
 from operator import sub
 import sys
 import time
@@ -12,6 +13,11 @@ import struct
 import redis
 import json
 from dnslib import *
+
+# Read config file
+settings = configparser.ConfigParser()
+settings.read('config.ini')
+
 
 class DomainName(str):
     def __getattr__(self, item):
@@ -57,7 +63,7 @@ class BaseRequestHandler(socketserver.BaseRequestHandler):
             stream_key = subdomain
             try:
                 r.xadd(stream_key,record)
-                r.expire(stream_key,86400) # stream expire after 24h
+                r.expire(stream_key,settings['REDIS']['StreamKeyExpTime']) # stream expire after
             except:
                 print("Cannot store informations into redis stream:",stream_key)
                 traceback.print_exc(file=sys.stderr)
