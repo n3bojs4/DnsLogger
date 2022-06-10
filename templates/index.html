@@ -25,6 +25,8 @@
 <form>
     <button type="submit" class="btn btn-primary" formaction="Reset" formmethod="POST">Reset</button>
     <button type="submit" class="btn btn-primary" formaction="/" formmethod="GET">New subdomain</button>
+    <button type="submit" class="btn btn-primary" onclick=navigator.clipboard.writeText(window.location.href.split('?')[0]+"Shared?SubDomain={{ subdomain }}&Token={{ token }}")>Share!</button>
+   
 </form>
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">

@@ -67,10 +67,11 @@ def create_app(config):
                 
             for stream in streams[1]:
                 for line in r.xrange(stream):
+                    print("Debug line=",line)
                     date = line[1][b'date'].decode("utf-8")
                     type = line[1][b'type'].decode("utf-8")
                     ip = line[1][b'ip'].decode("utf-8")
-                    dnsreq = line[1][b'SubDomain'].decode("utf-8")
+                    dnsreq = line[1][b'subdomain'].decode("utf-8")
                     bar = date+" "+type+" "+ip+" "+dnsreq
                     results.append(bar)
           
@@ -91,7 +92,14 @@ def create_app(config):
         resp.set_cookie('Token', 'SubDomain', max_age=0)
         return resp
 
-
+    @app.route('/Shared', methods = ['GET'])
+    def SetForShared():
+        SubDomain = request.args.get('SubDomain')
+        Token = request.args.get('Token')
+        resp = make_response('<HTML><a href="./">Click here to access the shared content.</a></HTML>')
+        resp.set_cookie('Token', Token)
+        resp.set_cookie('SubDomain', SubDomain)
+        return resp
 
     # Serve Static content
     @app.route('/static/<path:path>')
