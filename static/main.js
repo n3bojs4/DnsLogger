@@ -17,5 +17,9 @@ function toggleAutoRefresh(cb) {
     }
 }
 
+function isHttps(){
+    return (document.location.protocol == 'https:');
+}
+
 window.onload=checkReloading;
 
